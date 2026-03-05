@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Mineral Explorer — Colección exclusiva de minerales y cristales. Descubre piezas únicas extraídas de la naturaleza.">
+  <title>Mineral Explorer — Colección de Minerales y Cristales</title>
+  <link rel="stylesheet" href="css/styles.css">
+
+  <!-- Favicon placeholder -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💎</text></svg>">
+</head>
+<body>
+
+  <!-- ================================================================
+       HEADER / NAVIGATION
+       ================================================================ -->
+  <header class="header" id="header">
+    <a href="#inicio" class="logo">Mineral <span>Explorer</span></a>
+    <nav class="nav-links" id="navLinks">
+      <a href="#inicio" class="active">Inicio</a>
+      <a href="#coleccion">Colección</a>
+      <a href="#hallazgos">Hallazgos</a>
+      <a href="#info">Info</a>
+      <a href="#foro">Foro</a>
+    </nav>
+    <button class="hamburger" id="hamburger" aria-label="Abrir menú">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </header>
+
+
+  <!-- ================================================================
+       INICIO — Hero Section
+       ================================================================ -->
+  <section class="hero" id="inicio">
+    <div class="hero-bg">
+      <img src="minerales/mineral_09_angulo_01.jpeg" alt="Geoda de cristal de cuarzo" loading="eager">
+    </div>
+
+    <div class="hero-content">
+      <p class="section-label">Colección Exclusiva</p>
+      <h1 class="hero-title">
+        Belleza<br>
+        <em>cristalizada</em>
+      </h1>
+      <p class="hero-subtitle">
+        Cristales y minerales extraídos directamente de la naturaleza. Cada pieza es única e irrepetible.
+      </p>
+      <div class="social-links">
+        <a href="https://www.tiktok.com/@mineral.explorer?_r=1&_t=ZN-94PhOQkMbOl" target="_blank" rel="noopener" aria-label="TikTok">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.27 6.27 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.34-6.34V8.86a8.28 8.28 0 004.86 1.56V6.97a4.83 4.83 0 01-1.1-.28z"/>
+          </svg>
+        </a>
+        <a href="#" target="_blank" rel="noopener" aria-label="Instagram">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+
+    <div class="scroll-indicator">
+      <span>Scroll</span>
+      <div class="line"></div>
+    </div>
+  </section>
+
+
+  <!-- ================================================================
+       COLECCIÓN — Mineral Gallery
+       ================================================================ -->
+  <section class="collection" id="coleccion">
+    <div class="container">
+
+      <div class="collection-header fade-in">
+        <p class="section-label">Nuestra Colección</p>
+        <h2 class="section-title">Piezas únicas</h2>
+        <p class="section-subtitle">Cada mineral ha sido cuidadosamente seleccionado y extraído. Explora la colección completa y descubre la belleza de la cristalización natural.</p>
+      </div>
+
+      <div class="mineral-grid" id="mineralGrid">
+
+        <!-- Mineral 01 -->
+        <div class="mineral-card fade-in" data-mineral="mineral_01" data-name="Drusa de Cuarzo" data-angles="3">
+          <img src="minerales/mineral_01_angulo_01.jpeg" alt="Drusa de Cuarzo" loading="lazy">
+          <div class="mineral-card-overlay">
+            <h3 class="mineral-card-name">Drusa de Cuarzo</h3>
+            <p class="mineral-card-meta">3 ángulos disponibles</p>
+            <span class="mineral-card-price">Consultar precio</span>
+          </div>
+        </div>
+
+        <!-- Mineral 02 -->
+        <div class="mineral-card fade-in" data-mineral="mineral_02" data-name="Cuarzo Hialino" data-angles="4">
+          <img src="minerales/mineral_02_angulo_01.jpeg" alt="Cuarzo Hialino" loading="lazy">
+          <div class="mineral-card-overlay">
+            <h3 class="mineral-card-name">Cuarzo Hialino</h3>
+            <p class="mineral-card-meta">4 ángulos disponibles</p>
+            <span class="mineral-card-price">Consultar precio</span>
+          </div>
+        </div>
+
+        <!-- Mineral 04 -->
+        <div class="mineral-card fade-in" data-mineral="mineral_04" data-name="Cuarzo Rosa" data-angles="5">
+          <img src="minerales/mineral_04_angulo_01.jpeg" alt="Cuarzo Rosa" loading="lazy">
+          <div class="mineral-card-overlay">
+            <h3 class="mineral-card-name">Cuarzo Rosa</h3>
+            <p class="mineral-card-meta">5 ángulos disponibles</p>
+            <span class="mineral-card-price">Consultar precio</span>
+          </div>
+        </div>
+
+        <!-- Mineral 05 -->
+        <div class="mineral-card fade-in" data-mineral="mineral_05" data-name="Punta de Cuarzo" data-angles="5">
+          <img src="minerales/mineral_05_angulo_01.jpeg" alt="Punta de Cuarzo" loading="lazy">
+          <div class="mineral-card-overlay">
+            <h3 class="mineral-card-name">Punta de Cuarzo</h3>
+            <p class="mineral-card-meta">5 ángulos disponibles</p>
+            <span class="mineral-card-price">Consultar precio</span>
+          </div>
+        </div>
+
+        <!-- Mineral 06 -->
+        <div class="mineral-card fade-in" data-mineral="mineral_06" data-name="Cuarzo con Hierro" data-angles="4">
+          <img src="minerales/mineral_06_angulo_01.jpeg" alt="Cuarzo con Hierro" loading="lazy">
+          <div class="mineral-card-overlay">
+            <h3 class="mineral-card-name">Cuarzo con Hierro</h3>
+            <p class="mineral-card-meta">4 ángulos disponibles</p>
+            <span class="mineral-card-price">Consultar precio</span>
+          </div>
+        </div>
+
+        <!-- Mineral 07 -->
+        <div class="mineral-card fade-in" data-mineral="mineral_07" data-name="Cuarzo Ahumado" data-angles="4">
+          <img src="minerales/mineral_07_angulo_01.jpeg" alt="Cuarzo Ahumado" loading="lazy">
+          <div class="mineral-card-overlay">
+            <h3 class="mineral-card-name">Cuarzo Ahumado</h3>
+            <p class="mineral-card-meta">4 ángulos disponibles</p>
+            <span class="mineral-card-price">Consultar precio</span>
+          </div>
+        </div>
+
+        <!-- Mineral 08 -->
+        <div class="mineral-card fade-in" data-mineral="mineral_08" data-name="Cristal Biterminado" data-angles="3">
+          <img src="minerales/mineral_08_angulo_01.jpeg" alt="Cristal Biterminado" loading="lazy">
+          <div class="mineral-card-overlay">
+            <h3 class="mineral-card-name">Cristal Biterminado</h3>
+            <p class="mineral-card-meta">3 ángulos disponibles</p>
+            <span class="mineral-card-price">Consultar precio</span>
+          </div>
+        </div>
+
+        <!-- Mineral 09 -->
+        <div class="mineral-card fade-in" data-mineral="mineral_09" data-name="Geoda de Cuarzo" data-angles="6">
+          <img src="minerales/mineral_09_angulo_01.jpeg" alt="Geoda de Cuarzo" loading="lazy">
+          <div class="mineral-card-overlay">
+            <h3 class="mineral-card-name">Geoda de Cuarzo</h3>
+            <p class="mineral-card-meta">6 ángulos disponibles</p>
+            <span class="mineral-card-price">Consultar precio</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ================================================================
+       MODAL — Mineral Detail Carousel
+       ================================================================ -->
+  <div class="modal-backdrop" id="modalBackdrop">
+    <div class="modal">
+      <button class="modal-close" id="modalClose">
+        Cerrar &times;
+      </button>
+      <div class="modal-image-container">
+        <img id="modalImage" src="" alt="">
+        <button class="carousel-btn carousel-prev" id="carouselPrev" aria-label="Anterior">
+          <svg viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+        </button>
+        <button class="carousel-btn carousel-next" id="carouselNext" aria-label="Siguiente">
+          <svg viewBox="0 0 24 24"><path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z"/></svg>
+        </button>
+      </div>
+      <div class="modal-info">
+        <h3 class="modal-mineral-name" id="modalName"></h3>
+        <div class="carousel-dots" id="carouselDots"></div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ================================================================
+       HALLAZGOS — Video Gallery
+       ================================================================ -->
+  <section class="hallazgos" id="hallazgos">
+    <div class="container">
+
+      <div class="hallazgos-header fade-in">
+        <p class="section-label">Trabajo de Campo</p>
+        <h2 class="section-title">Hallazgos</h2>
+        <p class="section-subtitle">Acompáñanos a la naturaleza y descubre el proceso de extracción de cada cristal. Vídeos directos desde el campo.</p>
+      </div>
+
+      <div class="video-grid">
+
+        <!-- Video 1 — TikTok Embed Placeholder -->
+        <div class="video-card fade-in">
+          <div class="video-wrapper">
+            <div class="video-placeholder">
+              <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+              <span>Próximamente</span>
+            </div>
+          </div>
+          <div class="video-card-info">
+            <h3 class="video-card-title">Extracción en campo</h3>
+            <p class="video-card-desc">Descubriendo cuarzos en la sierra</p>
+          </div>
+        </div>
+
+        <!-- Video 2 -->
+        <div class="video-card fade-in">
+          <div class="video-wrapper">
+            <div class="video-placeholder">
+              <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+              <span>Próximamente</span>
+            </div>
+          </div>
+          <div class="video-card-info">
+            <h3 class="video-card-title">Limpieza de cristales</h3>
+            <p class="video-card-desc">El proceso de preparación de cada pieza</p>
+          </div>
+        </div>
+
+        <!-- Video 3 -->
+        <div class="video-card fade-in">
+          <div class="video-wrapper">
+            <div class="video-placeholder">
+              <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+              <span>Próximamente</span>
+            </div>
+          </div>
+          <div class="video-card-info">
+            <h3 class="video-card-title">Identificación mineral</h3>
+            <p class="video-card-desc">Cómo distinguir los diferentes tipos de cuarzo</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ================================================================
+       INFO — About / Process
+       ================================================================ -->
+  <section class="info" id="info">
+    <div class="container">
+
+      <div class="info-header fade-in">
+        <p class="section-label">Sobre Nosotros</p>
+        <h2 class="section-title">Nuestra historia</h2>
+        <p class="section-subtitle">Apasionados por la mineralogía y la belleza natural de los cristales.</p>
+      </div>
+
+      <div class="info-grid fade-in">
+        <div class="info-text">
+          <h3>La pasión por los minerales</h3>
+          <p>
+            Desde que encontramos nuestro primer cristal de cuarzo en la sierra, supimos que la mineralogía sería
+            más que una afición. Cada expedición es una aventura diferente: explorar nuevas cuevas, recorrer vetas
+            olvidadas y descubrir formaciones que la naturaleza ha tardado millones de años en crear.
+          </p>
+          <h3>Nuestro proceso</h3>
+          <p>
+            Extraemos cada pieza con herramientas manuales para preservar la integridad del cristal. Luego,
+            en nuestro taller, limpiamos cuidadosamente cada mineral respetando su forma y brillo natural.
+            No utilizamos tratamientos químicos ni procesos artificiales — lo que ves es pura naturaleza.
+          </p>
+          <h3>Compromiso con la naturaleza</h3>
+          <p>
+            Trabajamos con respeto al medio ambiente. Nuestras extracciones son artesanales y selectivas,
+            minimizando el impacto en el entorno. Creemos que la mejor forma de apreciar la naturaleza es
+            compartir su belleza sin destruirla.
+          </p>
+        </div>
+        <div class="info-image">
+          <img src="minerales/mineral_01_angulo_02.jpeg" alt="Proceso de extracción mineral" loading="lazy">
+        </div>
+      </div>
+
+      <div class="info-stats fade-in">
+        <div class="stat-item">
+          <span class="stat-number">9+</span>
+          <span class="stat-label">Minerales</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">34</span>
+          <span class="stat-label">Fotografías</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">∞</span>
+          <span class="stat-label">Pasión</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ================================================================
+       FORO — Community Forum
+       ================================================================ -->
+  <section class="foro" id="foro">
+    <div class="container">
+
+      <div class="foro-header fade-in">
+        <p class="section-label">Comunidad</p>
+        <h2 class="section-title">Foro</h2>
+        <p class="section-subtitle">Comparte tus hallazgos, coordenadas y fotos con otros exploradores de minerales.</p>
+      </div>
+
+      <!-- New Thread Form -->
+      <div class="foro-new-thread fade-in">
+        <h3>Publicar un nuevo hallazgo</h3>
+        <div class="foro-form-row">
+          <input class="foro-input" type="text" placeholder="Título del hilo..." id="threadTitle">
+          <input class="foro-input" type="text" placeholder="Coordenadas (ej: 40.4168, -3.7038)" id="threadCoords">
+        </div>
+        <textarea class="foro-textarea" placeholder="Describe tu hallazgo, el tipo de mineral, las condiciones del terreno..." id="threadBody"></textarea>
+        <div class="foro-actions" style="margin-top: var(--space-md);">
+          <button class="btn btn-ghost" type="button">
+            <svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
+            Subir foto
+          </button>
+          <button class="btn btn-primary" type="button">Publicar</button>
+        </div>
+      </div>
+
+      <!-- Thread List -->
+      <div class="thread-list fade-in">
+
+        <!-- Thread 1 — With location -->
+        <div class="thread-item">
+          <div class="thread-header">
+            <h4 class="thread-title">Veta de cuarzo transparente en la Sierra Norte</h4>
+            <span class="thread-tag location">📍 Ubicación</span>
+          </div>
+          <div class="thread-location">
+            <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+            40.7523, -3.8891
+          </div>
+          <p class="thread-body">
+            Encontré una veta increíble de cuarzo casi transparente a unos 1200m de altitud. Las formaciones son prismáticas y muy limpias. Recomiendo llevar cincel fino y martillo de geólogo.
+          </p>
+          <div class="thread-images">
+            <img src="minerales/mineral_02_angulo_01.jpeg" alt="Hallazgo cuarzo" loading="lazy">
+            <img src="minerales/mineral_02_angulo_02.jpeg" alt="Hallazgo cuarzo detalle" loading="lazy">
+          </div>
+          <div class="thread-footer">
+            <div class="thread-author">
+              <div class="thread-avatar">ME</div>
+              <span>MineralExplorer · hace 2 días</span>
+            </div>
+            <div class="thread-stats">
+              <span>💬 12</span>
+              <span>❤️ 28</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Thread 2 — With photos -->
+        <div class="thread-item">
+          <div class="thread-header">
+            <h4 class="thread-title">¿Alguien sabe identificar este cristal?</h4>
+            <span class="thread-tag photo">📷 Fotos</span>
+          </div>
+          <p class="thread-body">
+            Lo encontré en un arroyo cerca de Bernal. Tiene una tonalidad rosada que no había visto antes. ¿Podría ser cuarzo rosa o algún tipo de feldespato?
+          </p>
+          <div class="thread-images">
+            <img src="minerales/mineral_04_angulo_01.jpeg" alt="Cristal desconocido" loading="lazy">
+            <img src="minerales/mineral_04_angulo_03.jpeg" alt="Cristal desconocido detalle" loading="lazy">
+          </div>
+          <div class="thread-footer">
+            <div class="thread-author">
+              <div class="thread-avatar">CR</div>
+              <span>CristalRock · hace 5 días</span>
+            </div>
+            <div class="thread-stats">
+              <span>💬 7</span>
+              <span>❤️ 15</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Thread 3 — Discussion -->
+        <div class="thread-item">
+          <div class="thread-header">
+            <h4 class="thread-title">Mejores herramientas para extracción artesanal</h4>
+            <span class="thread-tag">Discusión</span>
+          </div>
+          <p class="thread-body">
+            Abro hilo para compartir qué herramientas usáis. Yo empecé con un martillo de albañil pero me pasé a uno de geólogo y la diferencia es brutal. ¿Recomendaciones de cinceles?
+          </p>
+          <div class="thread-footer">
+            <div class="thread-author">
+              <div class="thread-avatar">GE</div>
+              <span>GeoExplorer · hace 1 semana</span>
+            </div>
+            <div class="thread-stats">
+              <span>💬 23</span>
+              <span>❤️ 41</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ================================================================
+       FOOTER
+       ================================================================ -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <p class="footer-text">© 2026 Mineral Explorer — Todos los derechos reservados</p>
+        <div class="footer-links">
+          <a href="https://www.tiktok.com/@mineral.explorer?_r=1&_t=ZN-94PhOQkMbOl" target="_blank" rel="noopener" aria-label="TikTok">
+            <svg viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.27 6.27 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.34-6.34V8.86a8.28 8.28 0 004.86 1.56V6.97a4.83 4.83 0 01-1.1-.28z"/></svg>
+          </a>
+          <a href="#" target="_blank" rel="noopener" aria-label="Instagram">
+            <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+
+  <!-- ================================================================
+       JAVASCRIPT
+       ================================================================ -->
+  <script src="js/main.js"></script>
+</body>
+</html>
