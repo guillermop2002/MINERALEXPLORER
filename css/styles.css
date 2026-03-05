@@ -47,7 +47,9 @@
 }
 
 /* --- Reset & Base --- */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -83,7 +85,8 @@ img {
   height: auto;
 }
 
-ul, ol {
+ul,
+ol {
   list-style: none;
 }
 
@@ -307,13 +310,11 @@ button {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    to top,
-    rgba(0, 0, 0, 0.9) 0%,
-    rgba(0, 0, 0, 0.4) 40%,
-    rgba(0, 0, 0, 0.2) 70%,
-    rgba(0, 0, 0, 0.4) 100%
-  );
+  background: linear-gradient(to top,
+      rgba(0, 0, 0, 0.9) 0%,
+      rgba(0, 0, 0, 0.4) 40%,
+      rgba(0, 0, 0, 0.2) 70%,
+      rgba(0, 0, 0, 0.4) 100%);
 }
 
 .hero-content {
@@ -407,8 +408,15 @@ button {
 }
 
 @keyframes float {
-  0%, 100% { transform: translateX(-50%) translateY(0); }
-  50% { transform: translateX(-50%) translateY(8px); }
+
+  0%,
+  100% {
+    transform: translateX(-50%) translateY(0);
+  }
+
+  50% {
+    transform: translateX(-50%) translateY(8px);
+  }
 }
 
 /* ==========================================================================
@@ -464,11 +472,9 @@ button {
 .mineral-card-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    to top,
-    rgba(0, 0, 0, 0.85) 0%,
-    rgba(0, 0, 0, 0) 50%
-  );
+  background: linear-gradient(to top,
+      rgba(0, 0, 0, 0.85) 0%,
+      rgba(0, 0, 0, 0) 50%);
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -658,13 +664,47 @@ button {
 }
 
 @media (max-width: 768px) {
+  .modal {
+    width: 100vw;
+    max-width: 100vw;
+    max-height: 100vh;
+    height: 100vh;
+    justify-content: center;
+  }
+
   .modal-close {
-    top: -30px;
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 10;
+  }
+
+  .modal-image-container {
+    aspect-ratio: unset;
+    width: 100%;
+    height: 70vh;
+    border-radius: 0;
+  }
+
+  .modal-image-container img {
+    object-fit: cover;
   }
 
   .carousel-btn {
-    width: 36px;
-    height: 36px;
+    width: 40px;
+    height: 40px;
+  }
+
+  .carousel-prev {
+    left: 8px;
+  }
+
+  .carousel-next {
+    right: 8px;
+  }
+
+  .modal-info {
+    padding: var(--space-md) var(--space-lg);
   }
 
   .modal-mineral-name {
