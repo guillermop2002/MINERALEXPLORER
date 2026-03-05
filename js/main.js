@@ -154,7 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function updateCarouselImage() {
         const angleNum = String(currentAngle + 1).padStart(2, '0');
-        const src = `minerales/${currentMineral}_angulo_${angleNum}.jpeg`;
+        const src = `minerales/${currentMineral}_angulo_${angleNum}.webp`;
 
         // Set image directly — no preload to avoid race conditions
         modalImage.style.opacity = '0';
