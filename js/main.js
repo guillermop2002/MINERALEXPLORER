@@ -155,18 +155,24 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateCarouselImage() {
         const angleNum = String(currentAngle + 1).padStart(2, '0');
         const src = `minerales/${currentMineral}_angulo_${angleNum}.jpeg`;
-        modalImage.style.opacity = '0';
 
-        // Preload
-        const preload = new Image();
-        preload.onload = () => {
-            modalImage.src = src;
-            modalImage.alt = `${modalName.textContent} — Ángulo ${currentAngle + 1}`;
-            requestAnimationFrame(() => {
-                modalImage.style.opacity = '1';
-            });
+        // Set image directly — no preload to avoid race conditions
+        modalImage.style.opacity = '0';
+        modalImage.alt = `${modalName.textContent} — Ángulo ${currentAngle + 1}`;
+
+        // Always show image after load or error
+        const showImage = () => {
+            modalImage.style.opacity = '1';
         };
-        preload.src = src;
+        modalImage.onload = showImage;
+        modalImage.onerror = showImage;
+
+        // Force reload by clearing src first if same mineral different angle
+        modalImage.removeAttribute('src');
+        // Use setTimeout to ensure browser registers the src change
+        setTimeout(() => {
+            modalImage.src = src;
+        }, 10);
 
         // Update dots
         const dots = carouselDots.querySelectorAll('.carousel-dot');
