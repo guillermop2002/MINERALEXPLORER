@@ -332,6 +332,36 @@
 
 
   <!-- ================================================================
+       MODAL — Auth Modal
+       ================================================================ -->
+  <div class="modal-backdrop" id="authModalBackdrop"
+    style="display: none; align-items: center; justify-content: center;">
+    <div class="modal auth-modal"
+      style="width: 100%; max-width: 400px; padding: var(--space-xl); background-color: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius-md);">
+      <button class="modal-close" id="authModalClose" style="top: 15px; right: 15px;">
+        Cerrar &times;
+      </button>
+      <div style="margin-bottom: var(--space-lg);">
+        <h3 id="authTitle" style="font-family: var(--font-heading); font-size: 1.5rem;">Iniciar Sesión</h3>
+      </div>
+      <form id="authForm" style="display: flex; flex-direction: column; gap: var(--space-md);">
+        <input type="email" id="authEmail" class="foro-input" placeholder="Correo electrónico" required
+          style="width: 100%; box-sizing: border-box;">
+        <input type="password" id="authPassword" class="foro-input" placeholder="Contraseña" required minlength="6"
+          style="width: 100%; box-sizing: border-box;">
+        <button type="submit" class="btn btn-primary" id="authSubmitBtn"
+          style="width: 100%; justify-content: center;">Entrar</button>
+
+        <p style="text-align: center; color: var(--text-muted); font-size: 14px; margin-top: var(--space-sm);">
+          <span id="authSwitchText">¿No tienes cuenta?</span>
+          <a href="#" id="authSwitchLink" style="color: var(--text-light); text-decoration: underline;">Regístrate</a>
+        </p>
+        <p id="authError" style="color: #ff6b6b; font-size: 14px; text-align: center; display: none; margin: 0;"></p>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================================================================
        FORO — Community Forum
        ================================================================ -->
   <section class="foro" id="foro">
@@ -343,112 +373,50 @@
         <p class="section-subtitle">Comparte tus hallazgos, coordenadas y fotos con otros exploradores de minerales.</p>
       </div>
 
+      <!-- Auth State Indicator -->
+      <div class="foro-auth-state fade-in" id="foroAuthState"
+        style="text-align: center; margin-bottom: var(--space-xl); padding: var(--space-lg); border: 1px dashed var(--border-color);">
+        <p style="margin-bottom: var(--space-md); color: var(--text-muted);">Para publicar un hallazgo o dar likes,
+          necesitas estar registrado.</p>
+        <button class="btn btn-primary" id="loginBtn">Iniciar Sesión / Registrarse</button>
+      </div>
+
       <!-- New Thread Form -->
-      <div class="foro-new-thread fade-in">
-        <h3>Publicar un nuevo hallazgo</h3>
+      <div class="foro-new-thread fade-in" id="foroNewThread" style="display: none;">
+        <div
+          style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-md);">
+          <h3 style="margin: 0;">Publicar un nuevo hallazgo</h3>
+          <span id="currentUserLabel" style="font-size: 14px; color: var(--text-muted);"></span>
+        </div>
+
         <div class="foro-form-row">
-          <input class="foro-input" type="text" placeholder="Título del hilo..." id="threadTitle">
+          <input class="foro-input" type="text" placeholder="Título del hilo..." id="threadTitle" required>
           <input class="foro-input" type="text" placeholder="Coordenadas (ej: 40.4168, -3.7038)" id="threadCoords">
         </div>
         <textarea class="foro-textarea"
-          placeholder="Describe tu hallazgo, el tipo de mineral, las condiciones del terreno..."
-          id="threadBody"></textarea>
-        <div class="foro-actions" style="margin-top: var(--space-md);">
-          <button class="btn btn-ghost" type="button">
+          placeholder="Describe tu hallazgo, el tipo de mineral, las condiciones del terreno..." id="threadBody"
+          required></textarea>
+
+        <div class="foro-actions" style="margin-top: var(--space-md); flex-wrap: wrap; gap: 10px;">
+          <input type="file" id="threadImageFile" accept="image/*" style="display: none;">
+          <button class="btn btn-ghost" type="button" id="uploadPhotoBtn">
             <svg viewBox="0 0 24 24">
               <path
                 d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z" />
             </svg>
-            Subir foto
+            <span id="uploadPhotoText">Subir foto</span>
           </button>
-          <button class="btn btn-primary" type="button">Publicar</button>
+          <button class="btn btn-primary" type="button" id="publishThreadBtn">Publicar</button>
+
+          <button class="btn btn-ghost" type="button" id="logoutBtn" style="color: #ff6b6b; margin-left: auto;">Cerrar
+            sesión</button>
         </div>
+        <p id="publishError" style="color: #ff6b6b; display: none; font-size: 14px; margin-top: 10px;"></p>
       </div>
 
       <!-- Thread List -->
-      <div class="thread-list fade-in">
-
-        <!-- Thread 1 — With location -->
-        <div class="thread-item">
-          <div class="thread-header">
-            <h4 class="thread-title">Veta de cuarzo transparente en la Sierra Norte</h4>
-            <span class="thread-tag location">📍 Ubicación</span>
-          </div>
-          <div class="thread-location">
-            <svg viewBox="0 0 24 24">
-              <path
-                d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
-            </svg>
-            40.7523, -3.8891
-          </div>
-          <p class="thread-body">
-            Encontré una veta increíble de cuarzo casi transparente a unos 1200m de altitud. Las formaciones son
-            prismáticas y muy limpias. Recomiendo llevar cincel fino y martillo de geólogo.
-          </p>
-          <div class="thread-images">
-            <img src="minerales/mineral_02_angulo_01.webp" alt="Hallazgo cuarzo" loading="lazy">
-            <img src="minerales/mineral_02_angulo_02.webp" alt="Hallazgo cuarzo detalle" loading="lazy">
-          </div>
-          <div class="thread-footer">
-            <div class="thread-author">
-              <div class="thread-avatar">ME</div>
-              <span>MineralExplorer · hace 2 días</span>
-            </div>
-            <div class="thread-stats">
-              <span>💬 12</span>
-              <span>❤️ 28</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Thread 2 — With photos -->
-        <div class="thread-item">
-          <div class="thread-header">
-            <h4 class="thread-title">¿Alguien sabe identificar este cristal?</h4>
-            <span class="thread-tag photo">📷 Fotos</span>
-          </div>
-          <p class="thread-body">
-            Lo encontré en un arroyo cerca de Bernal. Tiene una tonalidad rosada que no había visto antes. ¿Podría ser
-            cuarzo rosa o algún tipo de feldespato?
-          </p>
-          <div class="thread-images">
-            <img src="minerales/mineral_04_angulo_01.webp" alt="Cristal desconocido" loading="lazy">
-            <img src="minerales/mineral_04_angulo_03.webp" alt="Cristal desconocido detalle" loading="lazy">
-          </div>
-          <div class="thread-footer">
-            <div class="thread-author">
-              <div class="thread-avatar">CR</div>
-              <span>CristalRock · hace 5 días</span>
-            </div>
-            <div class="thread-stats">
-              <span>💬 7</span>
-              <span>❤️ 15</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Thread 3 — Discussion -->
-        <div class="thread-item">
-          <div class="thread-header">
-            <h4 class="thread-title">Mejores herramientas para extracción artesanal</h4>
-            <span class="thread-tag">Discusión</span>
-          </div>
-          <p class="thread-body">
-            Abro hilo para compartir qué herramientas usáis. Yo empecé con un martillo de albañil pero me pasé a uno de
-            geólogo y la diferencia es brutal. ¿Recomendaciones de cinceles?
-          </p>
-          <div class="thread-footer">
-            <div class="thread-author">
-              <div class="thread-avatar">GE</div>
-              <span>GeoExplorer · hace 1 semana</span>
-            </div>
-            <div class="thread-stats">
-              <span>💬 23</span>
-              <span>❤️ 41</span>
-            </div>
-          </div>
-        </div>
-
+      <div class="thread-list fade-in" id="threadList">
+        <p style="text-align: center; color: var(--text-muted); padding: var(--space-xl);">Cargando hilos...</p>
       </div>
 
     </div>
@@ -485,7 +453,7 @@
   <!-- ================================================================
        JAVASCRIPT
        ================================================================ -->
-  <script src="js/main.js"></script>
+  <script type="module" src="js/main.js"></script>
 </body>
 
 </html>

@@ -1,9 +1,12 @@
+import { initForo } from './foro.js';
+
 /* ==========================================================================
    MINERAL EXPLORER — Main JavaScript
    Navigation, modal carousel, lazy loading, scroll animations
    ========================================================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
+    initForo();
 
     /* ---- DOM References ---- */
     const header = document.getElementById('header');
