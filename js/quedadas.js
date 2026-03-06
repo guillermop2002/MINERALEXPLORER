@@ -13,12 +13,15 @@ export function initQuedadas() {
     const meetupDate = document.getElementById('meetupDate');
     const meetupLat = document.getElementById('meetupLat');
     const meetupLng = document.getElementById('meetupLng');
+    const meetupLocationLabel = document.getElementById('meetupLocationLabel');
     const createMeetupBtn = document.getElementById('createMeetupBtn');
     const meetupError = document.getElementById('meetupError');
     const loginBtnQuedadas = document.getElementById('loginBtnQuedadas');
 
     // ---- State ----
     let currentUser = null;
+    let pickerMap = null;
+    let pickerMarker = null;
 
     // ---- Init ----
     checkUser();
@@ -37,6 +40,7 @@ export function initQuedadas() {
         if (quedadasAuthState) quedadasAuthState.style.display = 'none';
         if (quedadasNewForm) quedadasNewForm.style.display = 'block';
         if (quedadasUserLabel) quedadasUserLabel.textContent = `Como: ${currentUser.email.split('@')[0]}`;
+        initMapPicker();
         loadMeetups();
     }
 
@@ -72,12 +76,72 @@ export function initQuedadas() {
         meetupDate.min = now.toISOString().slice(0, 16);
     }
 
+    // ---- Leaflet Map Picker ----
+    function initMapPicker() {
+        const mapContainer = document.getElementById('meetupMapPicker');
+        if (!mapContainer || pickerMap) return; // Already initialized
+
+        // Center on Spain
+        pickerMap = L.map('meetupMapPicker').setView([40.4168, -3.7038], 6);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap',
+            maxZoom: 18
+        }).addTo(pickerMap);
+
+        // Click to set marker
+        pickerMap.on('click', async (e) => {
+            const { lat, lng } = e.latlng;
+
+            // Set/move marker
+            if (pickerMarker) {
+                pickerMarker.setLatLng(e.latlng);
+            } else {
+                pickerMarker = L.marker(e.latlng).addTo(pickerMap);
+            }
+
+            // Save coords
+            meetupLat.value = lat.toFixed(6);
+            meetupLng.value = lng.toFixed(6);
+            meetupLocationLabel.textContent = 'Buscando nombre del lugar...';
+            meetupLocationLabel.style.color = 'var(--text-secondary)';
+
+            // Reverse geocode with Nominatim (free)
+            try {
+                const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&accept-language=es`);
+                const data = await res.json();
+
+                const addr = data.address;
+                // Build a nice name: town/city + state or country
+                const placeName = addr.village || addr.town || addr.city || addr.municipality || addr.county || '';
+                const region = addr.state || addr.country || '';
+                const fullName = [placeName, region].filter(Boolean).join(', ') || data.display_name?.split(',').slice(0, 2).join(',') || 'Ubicación seleccionada';
+
+                meetupLocation.value = fullName;
+                meetupLocationLabel.innerHTML = `📍 <strong>${fullName}</strong>`;
+                pickerMarker.bindPopup(fullName).openPopup();
+            } catch {
+                meetupLocation.value = `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+                meetupLocationLabel.textContent = `📍 ${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+            }
+        });
+
+        // Fix Leaflet rendering issues when the map container was hidden
+        setTimeout(() => pickerMap.invalidateSize(), 200);
+    }
+
     // ---- Create Meetup ----
     createMeetupBtn?.addEventListener('click', async () => {
         meetupError.style.display = 'none';
 
-        if (!meetupTitle.value.trim() || !meetupDescription.value.trim() || !meetupLocation.value.trim() || !meetupDate.value) {
-            meetupError.textContent = 'Todos los campos son obligatorios.';
+        if (!meetupTitle.value.trim() || !meetupDescription.value.trim() || !meetupDate.value) {
+            meetupError.textContent = 'El título, la fecha y la descripción son obligatorios.';
+            meetupError.style.display = 'block';
+            return;
+        }
+
+        if (!meetupLat.value || !meetupLng.value) {
+            meetupError.textContent = 'Pincha en el mapa para seleccionar la ubicación.';
             meetupError.style.display = 'block';
             return;
         }
@@ -93,15 +157,12 @@ export function initQuedadas() {
         createMeetupBtn.textContent = 'Creando...';
 
         try {
-            const lat = meetupLat.value.trim() ? parseFloat(meetupLat.value.trim()) : null;
-            const lng = meetupLng.value.trim() ? parseFloat(meetupLng.value.trim()) : null;
-
             const { error } = await supabase.from('meetups').insert([{
                 title: meetupTitle.value.trim(),
                 description: meetupDescription.value.trim(),
-                location_name: meetupLocation.value.trim(),
-                location_lat: lat,
-                location_lng: lng,
+                location_name: meetupLocation.value || 'Ubicación seleccionada',
+                location_lat: parseFloat(meetupLat.value),
+                location_lng: parseFloat(meetupLng.value),
                 event_date: eventDate.toISOString(),
                 author_id: currentUser.id,
                 author_name: currentUser.email.split('@')[0]
@@ -109,12 +170,19 @@ export function initQuedadas() {
 
             if (error) throw error;
 
+            // Reset form
             meetupTitle.value = '';
             meetupDescription.value = '';
-            meetupLocation.value = '';
             meetupDate.value = '';
             meetupLat.value = '';
             meetupLng.value = '';
+            meetupLocation.value = '';
+            meetupLocationLabel.textContent = 'Ninguna ubicación seleccionada';
+            if (pickerMarker) {
+                pickerMap.removeLayer(pickerMarker);
+                pickerMarker = null;
+            }
+
             loadMeetups();
         } catch (err) {
             meetupError.textContent = `Error: ${err.message}`;
@@ -133,14 +201,12 @@ export function initQuedadas() {
 
         const now = new Date().toISOString();
 
-        // Fetch future meetups
         const { data: futureMeetups, error: futureErr } = await supabase
             .from('meetups')
             .select('*, meetup_attendees(*), meetup_comments(*)')
             .gte('event_date', now)
             .order('event_date', { ascending: true });
 
-        // Fetch last 3 past meetups
         const { data: pastMeetups, error: pastErr } = await supabase
             .from('meetups')
             .select('*, meetup_attendees(*), meetup_comments(*)')
@@ -162,20 +228,16 @@ export function initQuedadas() {
 
         meetupList.innerHTML = '';
 
-        // Future meetups header
         if (futureMeetups && futureMeetups.length > 0) {
             const futureHeader = document.createElement('h3');
-            futureHeader.className = 'meetup-section-title';
             futureHeader.innerHTML = '📅 Próximas quedadas';
             futureHeader.style.cssText = 'font-family: var(--font-serif); font-size: 1.3rem; margin-bottom: var(--space-md); color: var(--text-primary);';
             meetupList.appendChild(futureHeader);
             futureMeetups.forEach(m => meetupList.appendChild(buildMeetupCard(m, false)));
         }
 
-        // Past meetups header
         if (pastMeetups && pastMeetups.length > 0) {
             const pastHeader = document.createElement('h3');
-            pastHeader.className = 'meetup-section-title';
             pastHeader.innerHTML = '🕐 Últimas quedadas';
             pastHeader.style.cssText = 'font-family: var(--font-serif); font-size: 1.3rem; margin-top: var(--space-xl); margin-bottom: var(--space-md); color: var(--text-muted);';
             meetupList.appendChild(pastHeader);
@@ -199,6 +261,9 @@ export function initQuedadas() {
         const attendeeNames = attendees.map(a => a.user_name).join(', ') || 'Nadie aún';
         const hasCoords = meetup.location_lat && meetup.location_lng;
 
+        const mapsUrl = hasCoords ? `https://www.google.com/maps?q=${meetup.location_lat},${meetup.location_lng}` : '#';
+        const mapId = `map-${meetup.id.substring(0, 8)}`;
+
         let html = `
             <div class="meetup-card-header">
                 <div class="meetup-date-badge ${isPast ? 'past' : ''}">
@@ -216,24 +281,26 @@ export function initQuedadas() {
             <div class="meetup-card-location">
                 <svg viewBox="0 0 24 24" width="16" height="16" fill="var(--text-muted)"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
                 ${hasCoords
-                ? `<a href="https://www.google.com/maps?q=${meetup.location_lat},${meetup.location_lng}" target="_blank" rel="noopener" style="color: var(--text-secondary); text-decoration: underline;">${escapeHTML(meetup.location_name)}</a>`
+                ? `<a href="${mapsUrl}" target="_blank" rel="noopener" style="color: var(--text-secondary); text-decoration: underline;">${escapeHTML(meetup.location_name)}</a>`
                 : `<span>${escapeHTML(meetup.location_name)}</span>`
             }
             </div>
+        `;
 
-            ${hasCoords ? `
+        // OpenStreetMap embed preview
+        if (hasCoords) {
+            html += `
             <div class="meetup-map-preview">
-                <a href="https://www.google.com/maps?q=${meetup.location_lat},${meetup.location_lng}" target="_blank" rel="noopener" title="Abrir en Google Maps">
-                    <img src="https://maps.googleapis.com/maps/api/staticmap?center=${meetup.location_lat},${meetup.location_lng}&zoom=13&size=600x200&scale=2&maptype=roadmap&markers=color:red%7C${meetup.location_lat},${meetup.location_lng}&key=AIzaSyBgUALTrpej04tbInFxdfXruwl5RFvcLZU" 
-                         alt="Mapa de ${escapeHTML(meetup.location_name)}" 
-                         style="width:100%; height:160px; object-fit:cover; border-radius:8px; border:1px solid var(--border-color); cursor:pointer;"
-                         onerror="this.parentElement.parentElement.innerHTML='<iframe src=\'https://maps.google.com/maps?q=${meetup.location_lat},${meetup.location_lng}&output=embed\' style=\'width:100%;height:160px;border:none;border-radius:8px;\'></iframe>'">
+                <a href="${mapsUrl}" target="_blank" rel="noopener" title="Abrir en Google Maps" style="display:block; position:relative;">
+                    <div id="${mapId}" style="width:100%; height:160px; border-radius:8px; z-index:1;"></div>
+                    <div style="position:absolute; top:0; left:0; width:100%; height:100%; z-index:2; cursor:pointer;"></div>
                 </a>
-            </div>
-            ` : ''}
+            </div>`;
+        }
 
-            <p class="meetup-card-desc">${escapeHTML(meetup.description)}</p>
+        html += `<p class="meetup-card-desc">${escapeHTML(meetup.description)}</p>`;
 
+        html += `
             <div class="meetup-card-attendees">
                 <span class="meetup-attendee-label">👥 Asistentes (${attendees.length}):</span>
                 <span class="meetup-attendee-names">${escapeHTML(attendeeNames)}</span>
@@ -258,7 +325,6 @@ export function initQuedadas() {
 
         if (comments.length > 0) {
             html += `<div class="meetup-comments-list">`;
-            // Sort by created_at ascending
             comments.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
             comments.forEach(c => {
                 const cDate = new Date(c.created_at);
@@ -276,7 +342,6 @@ export function initQuedadas() {
             html += `</div>`;
         }
 
-        // Comment input (only for logged-in users)
         if (currentUser) {
             html += `
                 <div class="meetup-comment-input">
@@ -288,14 +353,35 @@ export function initQuedadas() {
 
         card.innerHTML = html;
 
+        // ---- Initialize Leaflet mini-map for this card ----
+        if (hasCoords) {
+            setTimeout(() => {
+                const miniMapEl = card.querySelector(`#${mapId}`);
+                if (miniMapEl) {
+                    const miniMap = L.map(miniMapEl, {
+                        zoomControl: false,
+                        dragging: false,
+                        scrollWheelZoom: false,
+                        doubleClickZoom: false,
+                        touchZoom: false,
+                        attributionControl: false
+                    }).setView([meetup.location_lat, meetup.location_lng], 13);
+
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        maxZoom: 18
+                    }).addTo(miniMap);
+
+                    L.marker([meetup.location_lat, meetup.location_lng]).addTo(miniMap);
+                }
+            }, 100);
+        }
+
         // ---- Attach event listeners ----
-        // Attendance
         const attendBtn = card.querySelector('.meetup-attend-btn');
         if (attendBtn && currentUser) {
             attendBtn.addEventListener('click', () => toggleAttendance(meetup.id, isAttending));
         }
 
-        // Comment send
         const sendBtn = card.querySelector('.meetup-comment-send');
         if (sendBtn) {
             const inputField = card.querySelector('.meetup-comment-field');

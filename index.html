@@ -12,6 +12,9 @@
   <!-- Favicon placeholder -->
   <link rel="icon"
     href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💎</text></svg>">
+  <!-- Leaflet.js for map picker -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </head>
 
 <body>
@@ -362,14 +365,21 @@
 
         <div class="foro-form-row">
           <input class="foro-input" type="text" placeholder="Título de la quedada..." id="meetupTitle" required>
-          <input class="foro-input" type="text" placeholder="Lugar (ej: Sierra de Bernal, zona norte)"
-            id="meetupLocation" required>
-        </div>
-        <div class="foro-form-row">
           <input class="foro-input" type="datetime-local" id="meetupDate" required style="color-scheme: dark;">
-          <input class="foro-input" type="text" placeholder="Latitud (ej: 40.4168)" id="meetupLat">
-          <input class="foro-input" type="text" placeholder="Longitud (ej: -3.7038)" id="meetupLng">
         </div>
+
+        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 8px;">📍 Pincha en el mapa para elegir la
+          ubicación:</p>
+        <div id="meetupMapPicker"
+          style="height: 250px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: var(--space-sm);">
+        </div>
+        <p id="meetupLocationLabel"
+          style="font-size: 13px; color: var(--text-secondary); margin-bottom: var(--space-md);">Ninguna ubicación
+          seleccionada</p>
+        <input type="hidden" id="meetupLat">
+        <input type="hidden" id="meetupLng">
+        <input type="hidden" id="meetupLocation">
+
         <textarea class="foro-textarea"
           placeholder="Describe la quedada: qué vamos a buscar, qué llevar, punto de encuentro..."
           id="meetupDescription" required></textarea>
