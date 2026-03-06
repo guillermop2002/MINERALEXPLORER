@@ -1224,6 +1224,224 @@ button {
 }
 
 /* ==========================================================================
+   QUEDADAS — Meetups UI
+   ========================================================================== */
+
+.quedadas {
+  padding: var(--space-3xl) 0;
+  background: var(--bg-primary);
+}
+
+.quedadas-header {
+  text-align: center;
+  margin-bottom: var(--space-2xl);
+}
+
+.quedadas-header .section-subtitle {
+  margin: 0 auto;
+}
+
+/* Meetup list */
+.meetup-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+/* Meetup card */
+.meetup-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: var(--space-lg);
+  transition: border-color var(--transition-fast);
+}
+
+.meetup-card:hover {
+  border-color: var(--border-light);
+}
+
+.meetup-card.meetup-past {
+  opacity: 0.5;
+}
+
+.meetup-card.meetup-past:hover {
+  opacity: 0.7;
+}
+
+.meetup-card-header {
+  display: flex;
+  gap: var(--space-md);
+  align-items: flex-start;
+  margin-bottom: var(--space-md);
+}
+
+.meetup-date-badge {
+  flex-shrink: 0;
+  width: 52px;
+  height: 52px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border-light);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.meetup-date-badge.past {
+  opacity: 0.5;
+}
+
+.meetup-date-day {
+  font-family: var(--font-serif);
+  font-size: 1.4rem;
+  font-weight: 400;
+}
+
+.meetup-date-month {
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.meetup-card-info {
+  flex: 1;
+}
+
+.meetup-card-title {
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+  font-weight: 400;
+  margin-bottom: 4px;
+}
+
+.meetup-card-meta {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.meetup-card-location {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  background: var(--bg-secondary);
+  border-radius: 4px;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-md);
+}
+
+.meetup-card-desc {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  margin-bottom: var(--space-md);
+}
+
+.meetup-card-attendees {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: baseline;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-bottom: var(--space-md);
+  padding: var(--space-sm) 0;
+  border-top: 1px solid var(--border-color);
+}
+
+.meetup-attendee-label {
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.meetup-card-actions {
+  margin-bottom: var(--space-md);
+}
+
+.meetup-attending {
+  color: #4caf50 !important;
+  border-color: #4caf50 !important;
+}
+
+/* Comments */
+.meetup-comments-section {
+  border-top: 1px solid var(--border-color);
+  padding-top: var(--space-md);
+}
+
+.meetup-comments-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
+}
+
+.meetup-comment {
+  display: flex;
+  gap: var(--space-sm);
+  align-items: flex-start;
+}
+
+.meetup-comment-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--border-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.55rem;
+  font-weight: 600;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.meetup-comment-content {
+  flex: 1;
+}
+
+.meetup-comment-author {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-right: 6px;
+}
+
+.meetup-comment-date {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+.meetup-comment-text {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-top: 2px;
+}
+
+.meetup-comment-input {
+  display: flex;
+  gap: var(--space-sm);
+  align-items: center;
+}
+
+@media (max-width: 768px) {
+  .meetup-card-header {
+    flex-direction: column;
+  }
+
+  .meetup-comment-input {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+/* ==========================================================================
    SCROLLBAR (optional refinement)
    ========================================================================== */
 ::-webkit-scrollbar {

@@ -1,4 +1,5 @@
 import { initForo } from './foro.js';
+import { initQuedadas } from './quedadas.js';
 
 /* ==========================================================================
    MINERAL EXPLORER — Main JavaScript
@@ -7,6 +8,7 @@ import { initForo } from './foro.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     initForo();
+    initQuedadas();
 
     /* ---- DOM References ---- */
     const header = document.getElementById('header');

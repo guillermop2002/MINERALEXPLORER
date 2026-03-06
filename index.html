@@ -26,6 +26,7 @@
       <a href="#coleccion">Colección</a>
       <a href="#hallazgos">Hallazgos</a>
       <a href="#info">Info</a>
+      <a href="#quedadas">Quedadas</a>
       <a href="#foro">Foro</a>
     </nav>
     <button class="hamburger" id="hamburger" aria-label="Abrir menú">
@@ -325,6 +326,61 @@
           <span class="stat-number">∞</span>
           <span class="stat-label">Pasión</span>
         </div>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ================================================================
+       QUEDADAS — Meetups Section
+       ================================================================ -->
+  <section class="quedadas" id="quedadas">
+    <div class="container">
+
+      <div class="quedadas-header fade-in">
+        <p class="section-label">Comunidad</p>
+        <h2 class="section-title">Quedadas</h2>
+        <p class="section-subtitle">Organiza salidas con otros exploradores para buscar minerales juntos.</p>
+      </div>
+
+      <!-- Auth State -->
+      <div class="foro-auth-state fade-in" id="quedadasAuthState"
+        style="text-align: center; margin-bottom: var(--space-xl); padding: var(--space-lg); border: 1px dashed var(--border-color);">
+        <p style="margin-bottom: var(--space-md); color: var(--text-muted);">Inicia sesión para crear quedadas o
+          confirmar asistencia.</p>
+        <button class="btn btn-primary" id="loginBtnQuedadas">Iniciar Sesión / Registrarse</button>
+      </div>
+
+      <!-- Create Meetup Form -->
+      <div class="foro-new-thread fade-in" id="quedadasNewForm" style="display: none;">
+        <div
+          style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-md);">
+          <h3 style="margin: 0;">Crear una quedada</h3>
+          <span id="quedadasUserLabel" style="font-size: 14px; color: var(--text-muted);"></span>
+        </div>
+
+        <div class="foro-form-row">
+          <input class="foro-input" type="text" placeholder="Título de la quedada..." id="meetupTitle" required>
+          <input class="foro-input" type="text" placeholder="Lugar (ej: Sierra de Bernal, zona norte)"
+            id="meetupLocation" required>
+        </div>
+        <div class="foro-form-row">
+          <input class="foro-input" type="datetime-local" id="meetupDate" required style="color-scheme: dark;">
+        </div>
+        <textarea class="foro-textarea"
+          placeholder="Describe la quedada: qué vamos a buscar, qué llevar, punto de encuentro..."
+          id="meetupDescription" required></textarea>
+
+        <div class="foro-actions" style="margin-top: var(--space-md);">
+          <button class="btn btn-primary" type="button" id="createMeetupBtn">Crear quedada</button>
+        </div>
+        <p id="meetupError" style="color: #ff6b6b; display: none; font-size: 14px; margin-top: 10px;"></p>
+      </div>
+
+      <!-- Meetup List -->
+      <div class="meetup-list fade-in" id="meetupList">
+        <p style="text-align: center; color: var(--text-muted); padding: var(--space-xl);">Cargando quedadas...</p>
       </div>
 
     </div>
