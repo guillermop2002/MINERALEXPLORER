@@ -506,9 +506,22 @@
   </footer>
 
 
-  <!-- ================================================================
-       JAVASCRIPT
-       ================================================================ -->
+  <!-- Image Overlay -->
+  <div id="imageOverlay"
+    style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:10000; cursor:pointer; align-items:center; justify-content:center;"
+    onclick="this.style.display='none'">
+    <img id="imageOverlayImg" src="" alt="Foto ampliada"
+      style="max-width:90%; max-height:90%; object-fit:contain; border-radius:8px;">
+  </div>
+
+  <script>
+    function openImageOverlay(url) {
+      const overlay = document.getElementById('imageOverlay');
+      const img = document.getElementById('imageOverlayImg');
+      img.src = url;
+      overlay.style.display = 'flex';
+    }
+  </script>
   <script type="module" src="js/main.js"></script>
 </body>
 

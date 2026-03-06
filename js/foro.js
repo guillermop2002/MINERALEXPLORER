@@ -272,7 +272,6 @@ export function initForo() {
             let html = `
                 <div class="thread-header">
                     <h4 class="thread-title">${escapeHTML(thread.title)}</h4>
-                    ${hasPhoto ? '<span class="thread-tag photo">📷 Foto</span>' : ''}
                 </div>
             `;
 
@@ -281,7 +280,7 @@ export function initForo() {
             if (hasPhoto) {
                 html += `
                 <div class="thread-images" style="margin-top: var(--space-md); margin-bottom: var(--space-md);">
-                    <img src="${thread.image_url}" alt="Foto del hallazgo" loading="lazy" style="max-width: 100%; height: auto; border-radius: 8px; display: block;">
+                    <img src="${thread.image_url}" alt="Foto del hallazgo" loading="lazy" style="max-width: 100%; height: auto; border-radius: 8px; display: block; cursor: pointer;" onclick="openImageOverlay('${thread.image_url}')">
                 </div>`;
             }
 
