@@ -187,6 +187,7 @@ button {
   display: flex;
   gap: var(--space-lg);
   align-items: center;
+  margin: 0 auto;
 }
 
 .nav-links a {
@@ -298,6 +299,7 @@ button {
     flex-direction: column;
     justify-content: center;
     gap: var(--space-xl);
+    margin: 0;
     transition: right var(--transition-slow);
   }
 
