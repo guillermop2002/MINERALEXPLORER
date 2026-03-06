@@ -1,5 +1,7 @@
 import { supabase } from './supabase.js';
 
+const ADMIN_EMAIL = 'bernalminerales@gmail.com';
+
 export function initQuedadas() {
     // ---- DOM Elements ----
     const quedadasAuthState = document.getElementById('quedadasAuthState');
@@ -260,6 +262,7 @@ export function initQuedadas() {
         const isAttending = currentUser && attendees.some(a => a.user_id === currentUser.id);
         const attendeeNames = attendees.map(a => a.user_name).join(', ') || 'Nadie aún';
         const hasCoords = meetup.location_lat && meetup.location_lng;
+        const isAdmin = currentUser && currentUser.email === ADMIN_EMAIL;
 
         const mapsUrl = hasCoords ? `https://www.google.com/maps?q=${meetup.location_lat},${meetup.location_lng}` : '#';
         const mapId = `map-${meetup.id.substring(0, 8)}`;
@@ -276,6 +279,7 @@ export function initQuedadas() {
                         ${isPast ? '✓ Finalizada' : `🕐 ${capitalize(dateStr)} a las ${timeStr}`} · ${relativeStr}
                     </p>
                 </div>
+                ${isAdmin ? `<button class="admin-delete-btn" data-meetup-id="${meetup.id}" title="Eliminar quedada">🗑️</button>` : ''}
             </div>
 
             <div class="meetup-card-location">
@@ -391,7 +395,28 @@ export function initQuedadas() {
             });
         }
 
+        // Admin delete listener
+        const deleteBtn = card.querySelector('.admin-delete-btn');
+        if (deleteBtn) {
+            deleteBtn.addEventListener('click', () => deleteMeetup(meetup.id));
+        }
+
         return card;
+    }
+
+    // ---- Delete Meetup (Admin) ----
+    async function deleteMeetup(meetupId) {
+        if (!currentUser || currentUser.email !== ADMIN_EMAIL) return;
+
+        if (!confirm('¿Seguro que quieres eliminar esta quedada? Se borrarán todos los asistentes y comentarios.')) return;
+
+        try {
+            const { error } = await supabase.from('meetups').delete().eq('id', meetupId);
+            if (error) throw error;
+            loadMeetups();
+        } catch (err) {
+            alert(`Error al eliminar: ${err.message}`);
+        }
     }
 
     // ---- Toggle Attendance ----

@@ -104,6 +104,21 @@ ON public.meetup_comments FOR SELECT USING (true);
 CREATE POLICY "Users can add meetup comments."
 ON public.meetup_comments FOR INSERT WITH CHECK (auth.uid() = user_id);
 
--- STORAGE policies (for forum images bucket 'forum-images')
--- CREATE POLICY "Give users access to own folder" ON storage.objects FOR INSERT TO authenticated WITH CHECK (bucket_id = 'forum-images');
--- CREATE POLICY "Anyone can view images" ON storage.objects FOR SELECT USING (bucket_id = 'forum-images');
+-- ============================================================
+-- ADMIN POLICIES (admin email: bernalminerales@gmail.com)
+-- ============================================================
+
+CREATE POLICY "Admin can delete threads."
+ON public.threads FOR DELETE USING (
+  auth.jwt() ->> 'email' = 'bernalminerales@gmail.com'
+);
+
+CREATE POLICY "Admin can delete meetups."
+ON public.meetups FOR DELETE USING (
+  auth.jwt() ->> 'email' = 'bernalminerales@gmail.com'
+);
+
+CREATE POLICY "Admin can delete meetup comments."
+ON public.meetup_comments FOR DELETE USING (
+  auth.jwt() ->> 'email' = 'bernalminerales@gmail.com'
+);

@@ -1,5 +1,8 @@
 import { supabase } from './supabase.js';
 
+const ADMIN_EMAIL = 'bernalminerales@gmail.com';
+const PAGE_SIZE = 10;
+
 export function initForo() {
     // ---- DOM Elements ----
     const authModalBackdrop = document.getElementById('authModalBackdrop');
@@ -15,13 +18,18 @@ export function initForo() {
     const loginBtn = document.getElementById('loginBtn');
     const logoutBtn = document.getElementById('logoutBtn');
 
+    // Navbar auth elements
+    const navLoginBtn = document.getElementById('navLoginBtn');
+    const navUserInfo = document.getElementById('navUserInfo');
+    const navUserName = document.getElementById('navUserName');
+    const navLogoutBtn = document.getElementById('navLogoutBtn');
+
     const foroAuthState = document.getElementById('foroAuthState');
     const foroNewThread = document.getElementById('foroNewThread');
     const currentUserLabel = document.getElementById('currentUserLabel');
     const threadList = document.getElementById('threadList');
 
     const threadTitle = document.getElementById('threadTitle');
-    const threadCoords = document.getElementById('threadCoords');
     const threadBody = document.getElementById('threadBody');
     const threadImageFile = document.getElementById('threadImageFile');
     const uploadPhotoBtn = document.getElementById('uploadPhotoBtn');
@@ -33,11 +41,12 @@ export function initForo() {
     let isLoginMode = true;
     let currentUser = null;
     let selectedFile = null;
+    let currentPage = 0;
+    let allThreadsLoaded = false;
 
     // ---- Init ----
     checkUser();
 
-    // Listen to Auth State Changes
     supabase.auth.onAuthStateChange((event, session) => {
         if (session) {
             currentUser = session.user;
@@ -50,23 +59,43 @@ export function initForo() {
 
     // ---- UI Updates ----
     function showAuthenticatedUI() {
-        foroAuthState.style.display = 'none';
-        foroNewThread.style.display = 'block';
-        currentUserLabel.textContent = `Como: ${currentUser.email.split('@')[0]}`;
-        loadThreads();
+        if (foroAuthState) foroAuthState.style.display = 'none';
+        if (foroNewThread) foroNewThread.style.display = 'block';
+        if (currentUserLabel) currentUserLabel.textContent = `Como: ${currentUser.email.split('@')[0]}`;
+
+        // Navbar auth
+        if (navLoginBtn) navLoginBtn.style.display = 'none';
+        if (navUserInfo) {
+            navUserInfo.style.display = 'flex';
+            navUserName.textContent = currentUser.email.split('@')[0];
+        }
+
+        currentPage = 0;
+        allThreadsLoaded = false;
+        loadThreads(true);
     }
 
     function showPublicUI() {
-        foroAuthState.style.display = 'block';
-        foroNewThread.style.display = 'none';
-        loadThreads();
+        if (foroAuthState) foroAuthState.style.display = 'block';
+        if (foroNewThread) foroNewThread.style.display = 'none';
+
+        // Navbar auth
+        if (navLoginBtn) navLoginBtn.style.display = 'inline-flex';
+        if (navUserInfo) navUserInfo.style.display = 'none';
+
+        currentPage = 0;
+        allThreadsLoaded = false;
+        loadThreads(true);
     }
 
     // ---- Auth Logic ----
-    loginBtn?.addEventListener('click', () => {
+    function openAuthModal() {
         authModalBackdrop.style.display = 'flex';
         setTimeout(() => authModalBackdrop.classList.add('active'), 10);
-    });
+    }
+
+    loginBtn?.addEventListener('click', openAuthModal);
+    navLoginBtn?.addEventListener('click', openAuthModal);
 
     function closeAuthModal() {
         authModalBackdrop.classList.remove('active');
@@ -129,9 +158,12 @@ export function initForo() {
         }
     });
 
-    logoutBtn?.addEventListener('click', async () => {
+    async function doLogout() {
         await supabase.auth.signOut();
-    });
+    }
+
+    logoutBtn?.addEventListener('click', doLogout);
+    navLogoutBtn?.addEventListener('click', doLogout);
 
     async function checkUser() {
         const { data: { session } } = await supabase.auth.getSession();
@@ -174,7 +206,6 @@ export function initForo() {
         try {
             let imageUrl = null;
 
-            // 1. Upload image if selected
             if (selectedFile) {
                 const fileExt = selectedFile.name.split('.').pop();
                 const fileName = `${Math.random()}.${fileExt}`;
@@ -190,32 +221,27 @@ export function initForo() {
                 imageUrl = data.publicUrl;
             }
 
-            // 2. Insert thread
             const { error: insertError } = await supabase
                 .from('threads')
-                .insert([
-                    {
-                        title: threadTitle.value.trim(),
-                        body: threadBody.value.trim(),
-                        coords: threadCoords.value.trim() || null,
-                        image_url: imageUrl,
-                        author_id: currentUser.id,
-                        author_name: currentUser.email.split('@')[0]
-                    }
-                ]);
+                .insert([{
+                    title: threadTitle.value.trim(),
+                    body: threadBody.value.trim(),
+                    image_url: imageUrl,
+                    author_id: currentUser.id,
+                    author_name: currentUser.email.split('@')[0]
+                }]);
 
             if (insertError) throw insertError;
 
-            // Success
             threadTitle.value = '';
             threadBody.value = '';
-            threadCoords.value = '';
             selectedFile = null;
             threadImageFile.value = '';
             uploadPhotoText.textContent = 'Subir foto';
 
-            // Reload threads
-            loadThreads();
+            currentPage = 0;
+            allThreadsLoaded = false;
+            loadThreads(true);
 
         } catch (error) {
             publishError.textContent = `Error: ${error.message}`;
@@ -226,36 +252,48 @@ export function initForo() {
         }
     });
 
-    // ---- Load Threads ----
-    async function loadThreads() {
+    // ---- Load Threads (Paginated) ----
+    async function loadThreads(reset = false) {
         if (!threadList) return;
 
-        threadList.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: var(--space-xl);">Cargando hilos...</p>';
+        if (reset) {
+            currentPage = 0;
+            allThreadsLoaded = false;
+            threadList.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: var(--space-xl);">Cargando hilos...</p>';
+        }
+
+        const from = currentPage * PAGE_SIZE;
+        const to = from + PAGE_SIZE - 1;
 
         const { data: threads, error } = await supabase
             .from('threads')
-            .select(`
-                *,
-                thread_likes (user_id)
-            `)
-            .order('created_at', { ascending: false });
+            .select(`*, thread_likes (user_id)`)
+            .order('created_at', { ascending: false })
+            .range(from, to);
 
         if (error) {
             threadList.innerHTML = `<p style="text-align: center; color: #ff6b6b; padding: var(--space-xl);">Error al cargar el foro: ${error.message}</p>`;
             return;
         }
 
-        if (threads.length === 0) {
+        if (reset) {
+            threadList.innerHTML = '';
+        }
+
+        // Remove existing "Ver más" button
+        const existingBtn = threadList.querySelector('.load-more-btn');
+        if (existingBtn) existingBtn.remove();
+
+        if (threads.length === 0 && currentPage === 0) {
             threadList.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: var(--space-xl);">No hay hallazgos publicados todavía. ¡Sé el primero!</p>';
             return;
         }
 
-        threadList.innerHTML = '';
+        const isAdmin = currentUser && currentUser.email === ADMIN_EMAIL;
+
         threads.forEach(thread => {
-            const hasCoords = !!thread.coords;
             const hasPhoto = !!thread.image_url;
 
-            // Calculate total likes and if user liked
             let userLiked = false;
             let totalLikes = thread.thread_likes ? thread.thread_likes.length : 0;
 
@@ -272,6 +310,7 @@ export function initForo() {
             let html = `
                 <div class="thread-header">
                     <h4 class="thread-title">${escapeHTML(thread.title)}</h4>
+                    ${isAdmin ? `<button class="admin-delete-btn" data-thread-id="${thread.id}" data-image-url="${thread.image_url || ''}" title="Eliminar hilo">🗑️</button>` : ''}
                 </div>
             `;
 
@@ -308,38 +347,90 @@ export function initForo() {
             threadEl.innerHTML = html;
             threadList.appendChild(threadEl);
 
-            // Add listener to the newly created button
+            // Like listener
             const likeBtn = threadEl.querySelector('.like-btn');
             if (currentUser) {
                 likeBtn.addEventListener('click', () => toggleLike(thread.id, userLiked, likeBtn));
             }
+
+            // Admin delete listener
+            const deleteBtn = threadEl.querySelector('.admin-delete-btn');
+            if (deleteBtn) {
+                deleteBtn.addEventListener('click', () => deleteThread(thread.id, thread.image_url));
+            }
         });
+
+        // Show "Ver más" button if we got a full page of results
+        if (threads.length === PAGE_SIZE) {
+            currentPage++;
+            const loadMoreBtn = document.createElement('button');
+            loadMoreBtn.className = 'btn btn-ghost load-more-btn';
+            loadMoreBtn.textContent = 'Ver más';
+            loadMoreBtn.style.cssText = 'display: block; margin: var(--space-lg) auto 0; padding: 10px 30px;';
+            loadMoreBtn.addEventListener('click', () => {
+                loadMoreBtn.textContent = 'Cargando...';
+                loadMoreBtn.disabled = true;
+                loadThreads(false);
+            });
+            threadList.appendChild(loadMoreBtn);
+        }
+    }
+
+    // ---- Delete Thread (Admin) ----
+    async function deleteThread(threadId, imageUrl) {
+        if (!currentUser || currentUser.email !== ADMIN_EMAIL) return;
+
+        if (!confirm('¿Seguro que quieres eliminar este hilo? Esta acción no se puede deshacer.')) return;
+
+        try {
+            // 1. Delete image from storage if exists
+            if (imageUrl) {
+                try {
+                    // Extract path from URL: .../forum-images/userId/filename
+                    const url = new URL(imageUrl);
+                    const pathParts = url.pathname.split('/forum-images/');
+                    if (pathParts[1]) {
+                        const storagePath = decodeURIComponent(pathParts[1]);
+                        await supabase.storage.from('forum-images').remove([storagePath]);
+                    }
+                } catch (e) {
+                    console.warn('Could not delete image from storage:', e);
+                }
+            }
+
+            // 2. Delete the thread (cascade deletes likes)
+            const { error } = await supabase.from('threads').delete().eq('id', threadId);
+            if (error) throw error;
+
+            currentPage = 0;
+            allThreadsLoaded = false;
+            loadThreads(true);
+        } catch (err) {
+            alert(`Error al eliminar: ${err.message}`);
+        }
     }
 
     // ---- Like Logic ----
     async function toggleLike(threadId, currentlyLiked, btnNode) {
         if (!currentUser) return;
-
         btnNode.disabled = true;
 
         try {
             if (currentlyLiked) {
-                // Remove like
                 await supabase.from('thread_likes').delete().match({ thread_id: threadId, user_id: currentUser.id });
-                // We could just reload threads, but optimistic UI update is faster
-                loadThreads();
             } else {
-                // Add like
                 await supabase.from('thread_likes').insert([{ thread_id: threadId, user_id: currentUser.id }]);
-                loadThreads();
             }
+            currentPage = 0;
+            allThreadsLoaded = false;
+            loadThreads(true);
         } catch (error) {
             console.error('Error toggling like:', error);
             btnNode.disabled = false;
         }
     }
 
-    // Utility 
+    // Utility
     function escapeHTML(str) {
         return str.replace(/[&<>'"]/g,
             tag => ({
