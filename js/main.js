@@ -161,23 +161,20 @@ document.addEventListener('DOMContentLoaded', () => {
         const angleNum = String(currentAngle + 1).padStart(2, '0');
         const src = `minerales/${currentMineral}_angulo_${angleNum}.webp`;
 
-        // Set image directly — no preload to avoid race conditions
+        // Fade out old image
         modalImage.style.opacity = '0';
-        modalImage.alt = `${modalName.textContent} — Ángulo ${currentAngle + 1}`;
 
-        // Always show image after load or error
+        // Always show image and set alt text AFTER load or error
         const showImage = () => {
+            modalImage.alt = `${modalName.textContent} — Ángulo ${currentAngle + 1}`;
             modalImage.style.opacity = '1';
         };
+
         modalImage.onload = showImage;
         modalImage.onerror = showImage;
 
-        // Force reload by clearing src first if same mineral different angle
-        modalImage.removeAttribute('src');
-        // Use setTimeout to ensure browser registers the src change
-        setTimeout(() => {
-            modalImage.src = src;
-        }, 10);
+        // Set the new source. Browser retains the old image until new one downloads, avoiding broken icon flash.
+        modalImage.src = src;
 
         // Update dots
         const dots = carouselDots.querySelectorAll('.carousel-dot');
