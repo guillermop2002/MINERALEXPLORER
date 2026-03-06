@@ -11,6 +11,8 @@ export function initQuedadas() {
     const meetupDescription = document.getElementById('meetupDescription');
     const meetupLocation = document.getElementById('meetupLocation');
     const meetupDate = document.getElementById('meetupDate');
+    const meetupLat = document.getElementById('meetupLat');
+    const meetupLng = document.getElementById('meetupLng');
     const createMeetupBtn = document.getElementById('createMeetupBtn');
     const meetupError = document.getElementById('meetupError');
     const loginBtnQuedadas = document.getElementById('loginBtnQuedadas');
@@ -91,10 +93,15 @@ export function initQuedadas() {
         createMeetupBtn.textContent = 'Creando...';
 
         try {
+            const lat = meetupLat.value.trim() ? parseFloat(meetupLat.value.trim()) : null;
+            const lng = meetupLng.value.trim() ? parseFloat(meetupLng.value.trim()) : null;
+
             const { error } = await supabase.from('meetups').insert([{
                 title: meetupTitle.value.trim(),
                 description: meetupDescription.value.trim(),
                 location_name: meetupLocation.value.trim(),
+                location_lat: lat,
+                location_lng: lng,
                 event_date: eventDate.toISOString(),
                 author_id: currentUser.id,
                 author_name: currentUser.email.split('@')[0]
@@ -106,6 +113,8 @@ export function initQuedadas() {
             meetupDescription.value = '';
             meetupLocation.value = '';
             meetupDate.value = '';
+            meetupLat.value = '';
+            meetupLng.value = '';
             loadMeetups();
         } catch (err) {
             meetupError.textContent = `Error: ${err.message}`;
@@ -188,6 +197,7 @@ export function initQuedadas() {
         const comments = meetup.meetup_comments || [];
         const isAttending = currentUser && attendees.some(a => a.user_id === currentUser.id);
         const attendeeNames = attendees.map(a => a.user_name).join(', ') || 'Nadie aún';
+        const hasCoords = meetup.location_lat && meetup.location_lng;
 
         let html = `
             <div class="meetup-card-header">
@@ -205,8 +215,22 @@ export function initQuedadas() {
 
             <div class="meetup-card-location">
                 <svg viewBox="0 0 24 24" width="16" height="16" fill="var(--text-muted)"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
-                <span>${escapeHTML(meetup.location_name)}</span>
+                ${hasCoords
+                ? `<a href="https://www.google.com/maps?q=${meetup.location_lat},${meetup.location_lng}" target="_blank" rel="noopener" style="color: var(--text-secondary); text-decoration: underline;">${escapeHTML(meetup.location_name)}</a>`
+                : `<span>${escapeHTML(meetup.location_name)}</span>`
+            }
             </div>
+
+            ${hasCoords ? `
+            <div class="meetup-map-preview">
+                <a href="https://www.google.com/maps?q=${meetup.location_lat},${meetup.location_lng}" target="_blank" rel="noopener" title="Abrir en Google Maps">
+                    <img src="https://maps.googleapis.com/maps/api/staticmap?center=${meetup.location_lat},${meetup.location_lng}&zoom=13&size=600x200&scale=2&maptype=roadmap&markers=color:red%7C${meetup.location_lat},${meetup.location_lng}&key=AIzaSyBgUALTrpej04tbInFxdfXruwl5RFvcLZU" 
+                         alt="Mapa de ${escapeHTML(meetup.location_name)}" 
+                         style="width:100%; height:160px; object-fit:cover; border-radius:8px; border:1px solid var(--border-color); cursor:pointer;"
+                         onerror="this.parentElement.parentElement.innerHTML='<iframe src=\'https://maps.google.com/maps?q=${meetup.location_lat},${meetup.location_lng}&output=embed\' style=\'width:100%;height:160px;border:none;border-radius:8px;\'></iframe>'">
+                </a>
+            </div>
+            ` : ''}
 
             <p class="meetup-card-desc">${escapeHTML(meetup.description)}</p>
 

@@ -1335,6 +1335,16 @@ button {
   margin-bottom: var(--space-md);
 }
 
+.meetup-map-preview {
+  margin-bottom: var(--space-md);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.meetup-map-preview a {
+  display: block;
+}
+
 .meetup-card-desc {
   color: var(--text-secondary);
   font-size: 0.9rem;
