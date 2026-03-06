@@ -225,7 +225,8 @@ button {
 .nav-auth {
   display: flex;
   align-items: center;
-  margin-left: var(--space-md);
+  margin-left: auto;
+  margin-right: var(--space-md);
 }
 
 /* Admin delete button */
@@ -308,19 +309,20 @@ button {
     font-size: 1.2rem;
   }
 
+  /* Keep auth in header but compact */
   .nav-auth {
-    position: fixed;
-    bottom: var(--space-xl);
-    right: -100%;
-    width: 100%;
-    justify-content: center;
-    margin-left: 0;
-    transition: right var(--transition-slow);
-    z-index: 1002;
+    margin-right: var(--space-md);
   }
 
-  .nav-links.open~.nav-auth {
-    right: 0;
+  #navUserName {
+    display: none !important;
+  }
+
+  #navLoginBtn,
+  #navLogoutBtn {
+    padding: 4px 10px;
+    font-size: 0.7rem;
+    white-space: nowrap;
   }
 }
 
