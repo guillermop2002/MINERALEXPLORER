@@ -272,25 +272,16 @@ export function initForo() {
             let html = `
                 <div class="thread-header">
                     <h4 class="thread-title">${escapeHTML(thread.title)}</h4>
-                    ${hasCoords ? '<span class="thread-tag location">📍 Ubicación</span>' : ''}
-                    ${hasPhoto && !hasCoords ? '<span class="thread-tag photo">📷 Foto</span>' : ''}
+                    ${hasPhoto ? '<span class="thread-tag photo">📷 Foto</span>' : ''}
                 </div>
             `;
-
-            if (hasCoords) {
-                html += `
-                <div class="thread-location">
-                    <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
-                    ${escapeHTML(thread.coords)}
-                </div>`;
-            }
 
             html += `<p class="thread-body">${escapeHTML(thread.body)}</p>`;
 
             if (hasPhoto) {
                 html += `
-                <div class="thread-images">
-                    <img src="${thread.image_url}" alt="Foto del hallazgo" loading="lazy" style="max-height: 400px; width: 100%; object-fit: cover; border-radius: var(--radius-sm); margin-top: var(--space-md);">
+                <div class="thread-images" style="margin-top: var(--space-md); margin-bottom: var(--space-md);">
+                    <img src="${thread.image_url}" alt="Foto del hallazgo" loading="lazy" style="max-width: 100%; height: auto; border-radius: 8px; display: block;">
                 </div>`;
             }
 
