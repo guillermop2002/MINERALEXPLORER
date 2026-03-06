@@ -129,7 +129,12 @@ export function initQuedadas() {
         });
 
         // Fix Leaflet rendering issues when the map container was hidden
-        setTimeout(() => pickerMap.invalidateSize(), 200);
+        const observer = new IntersectionObserver((entries) => {
+            if (entries[0].isIntersecting && pickerMap) {
+                pickerMap.invalidateSize();
+            }
+        });
+        observer.observe(mapContainer);
     }
 
     // ---- Create Meetup ----
