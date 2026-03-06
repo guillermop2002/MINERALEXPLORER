@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const header = document.getElementById('header');
     const hamburger = document.getElementById('hamburger');
     const navLinks = document.getElementById('navLinks');
+    const navAuth = document.getElementById('navAuth');
     const navAnchors = navLinks.querySelectorAll('a');
 
     const modalBackdrop = document.getElementById('modalBackdrop');
@@ -45,6 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
     hamburger.addEventListener('click', () => {
         hamburger.classList.toggle('active');
         navLinks.classList.toggle('open');
+        if (navAuth) navAuth.classList.toggle('open');
         document.body.style.overflow = navLinks.classList.contains('open') ? 'hidden' : '';
     });
 
@@ -53,6 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
         link.addEventListener('click', () => {
             hamburger.classList.remove('active');
             navLinks.classList.remove('open');
+            if (navAuth) navAuth.classList.remove('open');
             document.body.style.overflow = '';
         });
     });

@@ -307,6 +307,21 @@ button {
   .nav-links a {
     font-size: 1.2rem;
   }
+
+  .nav-auth {
+    position: fixed;
+    bottom: var(--space-xl);
+    right: -100%;
+    width: 100%;
+    justify-content: center;
+    margin-left: 0;
+    transition: right var(--transition-slow);
+    z-index: 1002;
+  }
+
+  .nav-links.open~.nav-auth {
+    right: 0;
+  }
 }
 
 /* ==========================================================================
